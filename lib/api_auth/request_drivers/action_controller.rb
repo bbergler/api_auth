@@ -59,6 +59,11 @@ module ApiAuth
         @request.request_uri
       end
 
+      def request_method
+        @request.method
+      end
+
+
       def set_date
         @request.env['DATE'] = Time.now.utc.httpdate
       end
@@ -72,10 +77,8 @@ module ApiAuth
         find_header %w(Authorization AUTHORIZATION HTTP_AUTHORIZATION)
       end
 
-    private
-
       def find_header(keys)
-        keys.map {|key| @headers[key] }.compact.first
+       keys.map {|key| @headers[key] }.compact.first
       end
 
     end

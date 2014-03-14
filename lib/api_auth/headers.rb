@@ -42,11 +42,26 @@ module ApiAuth
 
     # Returns the canonical string computed from the request's headers
     def canonical_string
-      [ @request.content_type,
+      config = ApiAuth.config
+      array = Array.new
+      array << @request.request_method  if config[:include_verb]
+
+      array .concat [ @request.content_type,
         @request.content_md5,
         @request.request_uri.gsub(/https?:\/\/[^(,|\?|\/)]*/,''), # remove host
         @request.timestamp
-      ].join(",")
+      ]
+      headers = config[:included_headers]
+      headers.each do |header|
+        headerup = header.upcase
+        headers = [headerup, headerup.gsub('-','_'),"HTTP_#{headerup.gsub('-','_')}"]
+        value = @request.find_header(headers)
+        unless value.nil?
+          key = config[:include_header_name] ? "#{header}=" :''
+          array << "#{key}#{value}"
+        end
+      end
+      array.join(",")
     end
 
     # Returns the authorization header from the request's headers

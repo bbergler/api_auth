@@ -12,5 +12,6 @@ require 'api_auth/request_drivers/action_dispatch'
 require 'api_auth/request_drivers/rack'
 
 require 'api_auth/headers'
+require 'api_auth/configuration'
 require 'api_auth/base'
 require 'api_auth/railtie'

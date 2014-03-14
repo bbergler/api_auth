@@ -8,9 +8,12 @@
 # secret keys necessary for your clients to sign their requests.
 module ApiAuth
 
+
   class << self
 
+    include Configuration
     include Helpers
+
 
     # Signs an HTTP request using the client's access id and secret key.
     # Returns the HTTP request object with the modified headers.
@@ -85,11 +88,11 @@ module ApiAuth
     end
 
     def auth_header(request, access_id, secret_key)
-      "APIAuth #{access_id}:#{hmac_signature(request, secret_key)}"
+      "#{config[:header_prefix]} #{access_id}:#{hmac_signature(request, secret_key)}"
     end
 
     def parse_auth_header(auth_header)
-      Regexp.new("APIAuth ([^:]+):(.+)$").match(auth_header)
+      Regexp.new("#{config[:header_prefix]} ([^:]+):(.+)$").match(auth_header)
     end
 
   end # class methods
